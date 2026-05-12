@@ -1,0 +1,138 @@
+{
+  "info": {
+    "name": "Kittygram — кото-квесты",
+    "description": "Коллекция для проверки REST API (курсовая). Перед запуском: `python manage.py migrate && python manage.py seed_demo_quest`.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://127.0.0.1:8000" },
+    { "key": "token", "value": "" },
+    { "key": "week_id", "value": "1" },
+    { "key": "participation_id", "value": "" },
+    { "key": "step1_id", "value": "1" },
+    { "key": "step2_id", "value": "2" }
+  ],
+  "item": [
+    {
+      "name": "1. Список недель (пагинация + фильтр)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/api/quest-weeks/?is_published=true&page=1"
+      }
+    },
+    {
+      "name": "2. Текущая неделя",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/api/quest-weeks/current/"
+      }
+    },
+    {
+      "name": "3. Регистрация пользователя",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"postman_user\",\n  \"password\": \"longpassword123\"\n}"
+        },
+        "url": "{{base_url}}/api/auth/register/"
+      }
+    },
+    {
+      "name": "4. Получить токен (логин)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"postman_user\",\n  \"password\": \"longpassword123\"\n}"
+        },
+        "url": "{{base_url}}/api/auth/token/"
+      }
+    },
+    {
+      "name": "5. Запись на неделю (enroll)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Token {{token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": "{{base_url}}/api/quest-weeks/{{week_id}}/enroll/"
+      }
+    },
+    {
+      "name": "6. Негатив: enroll без токена (401)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": "{{base_url}}/api/quest-weeks/{{week_id}}/enroll/"
+      }
+    },
+    {
+      "name": "7. Негатив: complete шаг 2 до шага 1 (400)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Token {{token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"step_id\": {{step2_id}}\n}"
+        },
+        "url": "{{base_url}}/api/participations/{{participation_id}}/complete_step/"
+      }
+    },
+    {
+      "name": "8. Complete шаг 1",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Token {{token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"step_id\": {{step1_id}}\n}"
+        },
+        "url": "{{base_url}}/api/participations/{{participation_id}}/complete_step/"
+      }
+    },
+    {
+      "name": "9. Leaderboard недели",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/api/quest-weeks/{{week_id}}/leaderboard/?limit=10"
+      }
+    },
+    {
+      "name": "10. Каталог котиков (legacy GET /cats/)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/cats/"
+      }
+    },
+    {
+      "name": "11. Список шагов с фильтром quest_week",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/api/quest-steps/?quest_week={{week_id}}&ordering=order"
+      }
+    },
+    {
+      "name": "12. Swagger schema (OpenAPI)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/api/schema/"
+      }
+    }
+  ]
+}

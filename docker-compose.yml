@@ -1,0 +1,12 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      SECRET_KEY: ${SECRET_KEY:-docker-dev-secret-change-me}
+      DEBUG: ${DEBUG:-True}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1,0.0.0.0,web}
+      PAGE_SIZE: ${PAGE_SIZE:-10}
+      SQLITE_NAME: ${SQLITE_NAME:-db.sqlite3}
+      REGISTER_STAFF_KEY: ${REGISTER_STAFF_KEY:-local-dev-staff-secret}
